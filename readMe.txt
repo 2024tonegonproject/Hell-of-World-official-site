@@ -7,6 +7,7 @@ UNDERTALE AUの
 Hell Of World の
 非公式サイトです
 詳しくは→ https://scratch.mit.edu/studios/50976499/ で
+!このサイトは製作中です!
 
 Yeah
 Um
@@ -17,3 +18,4 @@ in the UNDERTALE AU
 conceived by Siratama1538
 For details → https://scratch.mit.edu/studios/50976499/
 (Machine translation by DeepL)
+This site is wip!
