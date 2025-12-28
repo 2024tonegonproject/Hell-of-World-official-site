@@ -1,6 +1,6 @@
 @font-face {
   font-family: "JF-Dot-Ayu18";
-  src: url("JF-Dot-Ayu18.ttf") format("truetype");
+  src: url(https://raw.githubusercontent.com/2024tonegonproject/Hell-of-World-unofficial-site/main/JF-Dot-Ayu18.ttf) format("truetype");
 }
 
 title{
@@ -34,8 +34,4 @@ body {
   font-size: 14px;
   font-family: "JF-Dot-Ayu18","Yu Gothic",sans-serif;
   margin-top: 5px;
-}
-
-p {
-
 }
