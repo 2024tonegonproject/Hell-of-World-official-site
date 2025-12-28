@@ -38,5 +38,6 @@ p {
 }
 .Icons
 {
-  width: 20px; height: 20px;
+  width: 10px; 
+  height: auto;
 }
