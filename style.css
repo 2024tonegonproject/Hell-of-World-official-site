@@ -18,14 +18,16 @@ h3 {
   margin-top: 15px;
 }
 h5 {
-  font-size: 6px;
+  font-size: 3px;
+  text-align: center;
 }
 body {
   font-size: 14px
   font-family: "JF-Dot=ayu18","Yu Gothic",sans-serif;
   margin-top: 5px;
+}
+p {
   text-align: left;
-  font-weight: bold;
 }
 @font-face {
   font-family: "JF-Dot-Ayu18";
