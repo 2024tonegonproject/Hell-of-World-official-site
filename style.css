@@ -23,3 +23,7 @@ p {
   margin-top: 5px;
   text-align: left;
 }
+@font-face {
+  font-family: "JF-Dot-Ayu18";
+  src: url("JF-Dot-Ayu18.ttf") format("truetype");
+}
