@@ -40,4 +40,6 @@ p {
 {
   width: 10px; 
   height: auto;
+  display: block;
+  margin: 30px auto 0; 
 }
