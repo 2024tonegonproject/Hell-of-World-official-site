@@ -1,11 +1,18 @@
+@font-face {
+  font-family: "JF-Dot-Ayu18";
+  src: url("JF-Dot-Ayu18.ttf") format("truetype");
+}
+
 title{
   font-size: 30px;
   margin-top: 50px;
   text-align: center;
 }
+
 h1 {
   font-size: 26px;
   margin-top: 40px;
+  text-align: center;
 }
 
 h2 {
@@ -17,19 +24,18 @@ h3 {
   font-size: 18px;
   margin-top: 15px;
 }
+
 h5 {
   font-size: 3px;
   text-align: center;
 }
+
 body {
   font-size: 14px;
   font-family: "JF-Dot-Ayu18","Yu Gothic",sans-serif;
   margin-top: 5px;
 }
+
 p {
   text-align: left;
-}
-@font-face {
-  font-family: "JF-Dot-Ayu18";
-  src: url("JF-Dot-Ayu18.ttf") format("truetype");
 }
