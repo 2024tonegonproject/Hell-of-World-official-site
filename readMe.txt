@@ -5,7 +5,7 @@ Siratama1538氏(https://scratch.mit.edu/users/siratama1538/)が考案した
 えー
 UNDERTALE AUの
 Hell Of World の
-非公式サイトです
+公式サイトです
 詳しくは→ https://scratch.mit.edu/studios/50976499/ で
 
 サイトを作るのが初めてなので少しへたかもしれません
@@ -14,7 +14,7 @@ Hell Of World の
 Yeah
 Um
 This is
-the unofficial site for
+the official site for
 Hell Of World
 in the UNDERTALE AU
 created by Siratama1538 (https://scratch.mit.edu/users/siratama1538/)
