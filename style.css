@@ -17,11 +17,12 @@ h3 {
   font-size: 18px;
   margin-top: 15px;
 }
-p {
+body {
   font-size: 14px
   font-family: "JF-Dot=ayu18","Yu Gothic",sans-serif;
   margin-top: 5px;
   text-align: left;
+  font-weight: bold;
 }
 @font-face {
   font-family: "JF-Dot-Ayu18";
