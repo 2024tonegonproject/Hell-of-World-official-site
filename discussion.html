@@ -55,6 +55,7 @@
         .sort((a, b) => b.date - a.date)
         .forEach(c => {
           const div = document.createElement("div");
+          div.style.color = "white";
           div.className = "comment-box";
 
           const date = new Date(c.date).toLocaleString();
