@@ -67,3 +67,8 @@ body *.show {
   opacity: 1;
   transform: translateY(0);
 }
+.no-fade, .no-fade * {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}

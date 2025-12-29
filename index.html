@@ -263,6 +263,8 @@ targets.forEach(target => observer.observe(target));</script>
         <button onclick="deleteComment('${c.id}')">削除</button>
       `;
 
+      div.classList.add("fade-up", "show");
+
       container.appendChild(div);
     }
 
@@ -278,6 +280,8 @@ targets.forEach(target => observer.observe(target));</script>
         <button onclick="replyTo('${c.id}')">返信</button>
         <button onclick="deleteComment('${c.id}')">削除</button>
       `;
+
+      div.classList.add("fade-up", "show");
 
       container.appendChild(div);
     }
