@@ -50,3 +50,9 @@ p {
   display: inline-block;
   vertical-align: middle;
 }
+.scratch-thumb {
+  width: 200px;        /* 横幅だけ決める */
+  aspect-ratio: 4 / 3; /* Scratch のサムネ比率 */
+  object-fit: cover;   /* はみ出しを自然に調整 */
+  border-radius: 6px;
+}
