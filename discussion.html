@@ -32,7 +32,7 @@
   <textarea id="message" placeholder="メッセージ" required></textarea>
   <button type="submit">送信</button>
 </form>
-
+<script src="fade.js"></script>
 <script>
 document.getElementById("commentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -52,9 +52,6 @@ document.getElementById("commentForm").addEventListener("submit", async (e) => {
     alert("エラーが起きたかも…");
   }
 });
-</script>
-    
-<script src="fade.js"></script>
 </script>
 </body>
 </html>
