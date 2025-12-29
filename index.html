@@ -204,5 +204,19 @@
       This site Is a UNDERTALE's fan-made game "Hell of World" site.<br>
       このサイトはUNDERTALEのファンメイドゲーム、「Hell of World」のサイトです。<br>
       </h5>
+      <script>
+const targets = document.querySelectorAll('.fade-up');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    }
+  });
+});
+
+targets.forEach(target => observer.observe(target));
+</script>
+      
 </body>
 </html>

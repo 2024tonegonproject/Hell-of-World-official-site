@@ -51,19 +51,25 @@ p {
   vertical-align: middle;
 }
 
+#scratch-projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.scratch-thumb {
+  width: 200px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s ease forwards;
+}
+
 @keyframes fadeUp {
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
-.fade-up {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.fade-up.show {
-  opacity: 1;
-  transform: translateY(0);
 }

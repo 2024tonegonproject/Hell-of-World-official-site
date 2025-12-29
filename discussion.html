@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>ディスカッションフォーラム</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="discussion.css">
 </head>
 <body>
   <h1>ディスカッション+HOWスタジオ作品全掲載</h1>
@@ -80,11 +80,11 @@
       });
 
       if (res.ok) {
-        console.log("送信成功");
+        alert("送信成功");
         document.getElementById("message").value = "";
         loadComments();
       } else {
-        console.log("送信失敗");
+        alert("送信失敗");
       }
     });
 
