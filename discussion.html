@@ -26,9 +26,10 @@
         async>
     </script>
     <h2>ディスカッション(Githubアカウント不要)</h2>
-    <form id="commentForm">
-  <input type="text" id="name" placeholder="テストコード" required>
-  <textarea id="message" placeholder="テストコード" required></textarea>
+    
+<form id="commentForm">
+  <input type="text" id="name" placeholder="名前" required>
+  <textarea id="message" placeholder="メッセージ" required></textarea>
   <button type="submit">送信</button>
 </form>
 
@@ -39,21 +40,21 @@ document.getElementById("commentForm").addEventListener("submit", async (e) => {
   const name = document.getElementById("name").value;
   const message = document.getElementById("message").value;
 
-  const res = await fetch("https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/", {
+  const res = await fetch("https://樹さんの-worker-url", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, message })
   });
 
   if (res.ok) {
-    alert("送信しました！");
+    alert("送信したよ！");
   } else {
-    alert("エラーが起きました…");
+    alert("エラーが起きたかも…");
   }
 });
 </script>
     
-<script src="comment.js"></script>
+<script src="fade.js"></script>
 </script>
 </body>
 </html>
