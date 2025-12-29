@@ -4,13 +4,11 @@
   <meta charset="UTF-8">
   <title>ディスカッションフォーラム</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="js" href="style.css">
 </head>
 <body>
   <h1>ディスカッション+HOWスタジオ作品全掲載</h1>
   <h2>スタジオの作品一覧</h2>
   <div id="scratch-projects"></div>
-  <script src="fade.js"></script>
 <script>
 fetch("projects.json?v=" + Date.now())
   .then(res => res.json())
@@ -33,5 +31,6 @@ fetch("projects.json?v=" + Date.now())
     });
   });
 </script>
+  <script src="fade.js"></script>
 </body>
 </html>
