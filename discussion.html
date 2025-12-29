@@ -33,63 +33,126 @@
   <button type="submit">送信</button>
 </form>
 <script src="fade.js"></script>
-<script>    const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";
+<script>
+const WORKER_URL = "https://YOUR_WORKER_URL";
 
-    // コメント一覧を読み込む
-    async function loadComments() {
-      console.log("loadComments 実行");
+/* -------------------------
+   コメント一覧を読み込む
+------------------------- */
+async function loadComments() {
+  const res = await fetch(WORKER_URL);
+  const comments = await res.json();
 
-      const res = await fetch(WORKER_URL);
-      const comments = await res.json();
+  const container = document.getElementById("comments");
+  container.innerHTML = "";
 
-      console.log("取得したコメント:", comments);
+  // 親コメントと返信を分ける
+  const parents = comments.filter(c => !c.parent);
+  const replies = comments.filter(c => c.parent);
 
-      const container = document.getElementById("comments");
-      container.innerHTML = "";
+  // 新しい順に並べる
+  parents.sort((a, b) => b.date - a.date);
 
-      comments
-        .sort((a, b) => b.date - a.date)
-        .forEach(c => {
-          const div = document.createElement("div");
-          div.style.color = "white";
-          div.className = "comment-box";
+  parents.forEach(parent => {
+    renderComment(parent, container);
 
-          const date = new Date(c.date).toLocaleString();
+    // この親への返信を表示
+    replies
+      .filter(r => r.parent === parent.id)
+      .sort((a, b) => a.date - b.date)
+      .forEach(r => renderReply(r, container));
+  });
+}
 
-          div.innerHTML = `
-            <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
-            ${c.message}
-          `;
+/* -------------------------
+   親コメントの描画
+------------------------- */
+function renderComment(c, container) {
+  const div = document.createElement("div");
+  div.className = "comment-box";
 
-          container.appendChild(div);
-        });
-    }
+  const date = new Date(c.date).toLocaleString();
 
-    // フォーム送信
-    document.getElementById("commentForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      console.log("送信イベント発火");
+  div.innerHTML = `
+    <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    ${c.message}<br>
+    <button onclick="replyTo('${c.id}')">返信</button>
+    <button onclick="deleteComment('${c.id}')">削除</button>
+  `;
 
-      const name = document.getElementById("name").value;
-      const message = document.getElementById("message").value;
+  container.appendChild(div);
+}
 
-      const res = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, message })
-      });
+/* -------------------------
+   返信コメントの描画
+------------------------- */
+function renderReply(c, container) {
+  const div = document.createElement("div");
+  div.className = "reply-box";
 
-      if (res.ok) {
-        alert("送信成功");
-        document.getElementById("message").value = "";
-        loadComments();
-      } else {
-        alert("送信失敗");
-      }
-    });
+  const date = new Date(c.date).toLocaleString();
 
-    // ページ読み込み時に一覧を表示
-    loadComments();</script>
+  div.innerHTML = `
+    ↳ <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    ${c.message}<br>
+    <button onclick="replyTo('${c.id}')">返信</button>
+    <button onclick="deleteComment('${c.id}')">削除</button>
+  `;
+
+  container.appendChild(div);
+}
+
+/* -------------------------
+   コメント投稿
+------------------------- */
+document.getElementById("commentForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const message = document.getElementById("message").value;
+
+  await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, message })
+  });
+
+  document.getElementById("message").value = "";
+  loadComments();
+});
+
+/* -------------------------
+   返信投稿
+------------------------- */
+function replyTo(parentId) {
+  const name = prompt("名前");
+  const message = prompt("返信内容");
+
+  if (!message) return;
+
+  fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, message, parent: parentId })
+  }).then(() => loadComments());
+}
+
+/* -------------------------
+   コメント削除
+------------------------- */
+function deleteComment(id) {
+  if (!confirm("本当に削除しますか？")) return;
+
+  fetch(WORKER_URL + "?id=" + id, {
+    method: "DELETE"
+  }).then(() => loadComments());
+}
+
+/* -------------------------
+   ページ読み込み時に一覧表示
+------------------------- */
+loadComments();
+</script>
 
 </body>
 </html>
