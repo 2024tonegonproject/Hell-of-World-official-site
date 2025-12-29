@@ -39,7 +39,7 @@ document.getElementById("commentForm").addEventListener("submit", async (e) => {
   const name = document.getElementById("name").value;
   const message = document.getElementById("message").value;
 
-  const res = await fetch("https://樹さんの-worker-url", {
+  const res = await fetch("https://dash.cloudflare.com/a8ee69b26d1b97e13a94f21257f3656d/workers/services/edit/noisy-sound-60af/production", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, message })
