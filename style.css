@@ -36,16 +36,17 @@ body {
 p {
     text-align: center;
 }
-.Icons
-{
-  width: 30px; 
+.ctrs {
+  text-align: center;
+}
+.Icons {
+  width: 30px;
   height: auto;
   display: inline-block;
-  margin: 30px auto 0; 
-  margin-right: 10;
+  vertical-align: middle;
+  margin-right: 10px;
 }
-.ctrs
-{
-  font-size: 20px;
-  align-items: center;
+.name {
+  display: inline-block;
+  vertical-align: middle;
 }
