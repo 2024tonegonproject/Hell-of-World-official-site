@@ -309,7 +309,7 @@ targets.forEach(target => observer.observe(target));</script>
       });
 
       document.getElementById("message").value = "";
-      loadComments;
+      window.onload = function () { location.reload(true); };;
     });
 
     function replyTo(parentId) {
@@ -330,7 +330,7 @@ targets.forEach(target => observer.observe(target));</script>
 
       fetch(WORKER_URL + "?id=" + id, {
         method: "DELETE"
-      }).then(() => loadComments);
+      }).then(() => window.onload = function () { location.reload(true); });
     }
 
     loadComments();
