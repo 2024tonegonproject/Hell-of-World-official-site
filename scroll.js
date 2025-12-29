@@ -1,10 +1,9 @@
-const targets = document.querySelectorAll('.fade-up');
+const targets = document.querySelectorAll('body *');
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('show');
-      // 一度だけアニメさせたい場合は unobserve
       observer.unobserve(entry.target);
     }
   });
