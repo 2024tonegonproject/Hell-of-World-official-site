@@ -212,7 +212,7 @@
   <button type="submit">送信</button>
 </form>
     <div class="no-fade" id="comments"></div>
-    
+
     <h1 id="comment_a">コメント欄(Githubアカウント必要)</h1>
     <p>アカウント登録は<a href="https://github.com">こちら</a>からできます。</p>
     <script src="https://giscus.app/client.js"
@@ -254,31 +254,21 @@ targets.forEach(target => observer.observe(target));
 <script>
 const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";
 
+/* -----------------------------------
+   コメント一覧ロード
+----------------------------------- */
 async function loadComments() {
-  const params = new URLSearchParams(location.search);
-  const discussionId = params.get("discussion");
-
   const res = await fetch(WORKER_URL);
   const comments = await res.json();
-
-  console.log("取得した comments:", comments); 
-
-  if (!discussionId) {
-    loadDiscussions(comments);
-    return;
-  }
-
-  const filtered = comments.filter(c => c.discussionId === discussionId);
 
   const container = document.getElementById("comments");
   container.innerHTML = "";
 
-  renderTree(filtered, null, container, 0);
+  renderTree(comments, null, container, 0);
 }
 
-
 /* -----------------------------------
-   無限ネスト対応のツリー描画
+   ツリー描画
 ----------------------------------- */
 function renderTree(comments, parentId, container, level) {
   comments
@@ -290,26 +280,25 @@ function renderTree(comments, parentId, container, level) {
       } else {
         renderReply(c, container, comments, level);
       }
-
       renderTree(comments, c.id, container, level + 1);
     });
 }
 
 /* -----------------------------------
-   親コメントの描画
+   親コメント描画
 ----------------------------------- */
 function renderComment(c, container, comments, level) {
   const div = document.createElement("div");
-  div.id = c.id;
-  div.className = "comment-box fade-up show";
+  div.id = "c_" + c.id;
+  div.className = "comment-box";
   div.style.marginLeft = (level * 20) + "px";
 
   const date = new Date(c.date).toLocaleString();
 
   div.innerHTML = `
-    <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    <strong>${c.name}</strong> (${date})<br>
     ${c.message}<br>
-    <button onclick="replyTo('${c.id}')">返信</button>
+    <button onclick="replyTo('c_${c.id}')">返信</button>
     <button onclick="deleteComment('${c.id}')">削除</button>
   `;
 
@@ -317,23 +306,23 @@ function renderComment(c, container, comments, level) {
 }
 
 /* -----------------------------------
-   返信コメントの描画
+   返信コメント描画
 ----------------------------------- */
 function renderReply(c, container, comments, level) {
   const div = document.createElement("div");
-  div.id = c.id;
-  div.className = "reply-box fade-up show";
+  div.id = "c_" + c.id;
+  div.className = "reply-box";
   div.style.marginLeft = (level * 20) + "px";
 
   const date = new Date(c.date).toLocaleString();
-  const parentComment = comments.find(x => x.id === c.parent);
-  const parentName = parentComment ? parentComment.name : "不明";
+  const parent = comments.find(x => x.id === c.parent);
+  const parentName = parent ? parent.name : "不明";
 
   div.innerHTML = `
-    ↳ <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
-    <span style="opacity:0.7;">@${parentName}</span><br>
+    ↳ <strong>${c.name}</strong> (${date})<br>
+    @${parentName}<br>
     ${c.message}<br>
-    <button onclick="replyTo('${c.id}')">返信</button>
+    <button onclick="replyTo('c_${c.id}')">返信</button>
     <button onclick="deleteComment('${c.id}')">削除</button>
   `;
 
@@ -341,13 +330,10 @@ function renderReply(c, container, comments, level) {
 }
 
 /* -----------------------------------
-   新規コメント投稿（discussion対応）
+   新規コメント投稿
 ----------------------------------- */
-document.getElementById("commentForm")?.addEventListener("submit", async (e) => {
+document.getElementById("commentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const params = new URLSearchParams(location.search);
-  const discussionId = params.get("discussion");
 
   const name = document.getElementById("name").value;
   const message = document.getElementById("message").value;
@@ -355,7 +341,7 @@ document.getElementById("commentForm")?.addEventListener("submit", async (e) => 
   await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ discussionId, name, message })
+    body: JSON.stringify({ name, message })
   });
 
   document.getElementById("message").value = "";
@@ -363,47 +349,39 @@ document.getElementById("commentForm")?.addEventListener("submit", async (e) => 
 });
 
 /* -----------------------------------
-   返信投稿（discussion対応）
+   返信フォーム
 ----------------------------------- */
-function replyTo(parentId) {
-  // すでにフォームが出ていたら消す
-  const oldForm = document.getElementById("replyForm");
-  if (oldForm) oldForm.remove();
+function replyTo(parentDomId) {
+  const old = document.getElementById("replyForm");
+  if (old) old.remove();
 
-  // フォームを作る
   const form = document.createElement("div");
   form.id = "replyForm";
   form.style.margin = "10px 0";
   form.style.padding = "10px";
   form.style.border = "1px solid #ccc";
-  form.style.borderRadius = "6px";
-  form.style.background = "#fafafa";
+  form.style.background = "#fff";
 
   form.innerHTML = `
-    <input id="replyName" placeholder="名前" style="display:block; margin-bottom:5px; width:200px;">
-    <textarea id="replyMessage" placeholder="返信内容" style="display:block; margin-bottom:5px; width:300px; height:60px;"></textarea>
+    <input id="replyName" placeholder="名前" style="display:block; margin-bottom:5px;">
+    <textarea id="replyMessage" placeholder="返信内容" style="display:block; margin-bottom:5px;"></textarea>
     <button id="replySend">送信</button>
   `;
 
-  // 親コメントの下に挿入
-  const parentDiv = document.getElementById(parentId);
+  const parentDiv = document.getElementById(parentDomId);
   parentDiv.after(form);
 
-  // 送信処理
   document.getElementById("replySend").onclick = async () => {
     const name = document.getElementById("replyName").value;
     const message = document.getElementById("replyMessage").value;
-
-    if (!message) return;
 
     await fetch(WORKER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        discussionId: new URLSearchParams(location.search).get("discussion"),
         name,
         message,
-        parent: parentId
+        parent: parentDomId.replace("c_", "")
       })
     });
 
@@ -416,11 +394,10 @@ function replyTo(parentId) {
    コメント削除
 ----------------------------------- */
 function deleteComment(id) {
-  if (!confirm("本当に削除しますか？")) return;
+  if (!confirm("削除しますか？")) return;
 
-  fetch(WORKER_URL + "?id=" + id, {
-    method: "DELETE"
-  }).then(() => loadComments());
+  fetch(WORKER_URL + "?id=" + id, { method: "DELETE" })
+    .then(() => loadComments());
 }
 
 /* -----------------------------------
@@ -428,5 +405,6 @@ function deleteComment(id) {
 ----------------------------------- */
 loadComments();
 </script>
+
 </body>
 </html>
