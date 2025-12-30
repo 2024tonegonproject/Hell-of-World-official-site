@@ -46,9 +46,6 @@
 <script>
 const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";
 
-/* -----------------------------------
-   コメント一覧を読み込む（discussion対応）
------------------------------------ */
 async function loadComments() {
   const params = new URLSearchParams(location.search);
   const discussionId = params.get("discussion");
@@ -56,20 +53,20 @@ async function loadComments() {
   const res = await fetch(WORKER_URL);
   const comments = await res.json();
 
-  // discussionId が無い → 一覧ページ
+  console.log("取得した comments:", comments); 
+
   if (!discussionId) {
     loadDiscussions(comments);
     return;
   }
 
-  // discussionId がある → そのディスカッションのコメントだけ表示
   const filtered = comments.filter(c => c.discussionId === discussionId);
 
   const container = document.getElementById("comments");
   container.innerHTML = "";
 
   renderTree(filtered, null, container, 0);
-}
+}rTree(filtered, null, container, 0);
 
 /* -----------------------------------
    ディスカッション一覧を表示
