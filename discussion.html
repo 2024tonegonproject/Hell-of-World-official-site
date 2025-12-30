@@ -79,7 +79,9 @@ function loadDiscussions(comments) {
   container.innerHTML = "";
 
   // parent=null のコメントをディスカッションとして扱う
-  const discussions = comments.filter(c => c.parent === null);
+  const discussions = comments.filter(c =>
+  c.parent === null && c.discussionId === c.id);
+
 
   discussions.forEach(t => {
     const div = document.createElement("div");
