@@ -74,7 +74,7 @@ async function loadDisccusions() {
   const container = document.getElementById("Discussion");
   container.innerHTML = "";
 
-  Object.values(Disccusion).forEach(t => {
+  Object.values(Discussion).forEach(t => {
     const div = document.createElement("div");
     div.innerHTML = `<a href="?Discussion=${t.DiscussionId}">${t.message}</a>`;
     container.appendChild(div);
@@ -152,13 +152,17 @@ document.getElementById("commentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const params = new URLSearchParams(location.search);
-  const DisccusionId = params.get("Discussion");
+  const DiscussionId = params.get("Discussion");  // ★ URL から threadId を取得
+
+  const name = document.getElementById("name").value;
+  const message = document.getElementById("message").value;
 
   await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ DisccusionId, name, message })
+    body: JSON.stringify({ DiscussionId, name, message })  // ★ threadId を送る
   });
+
   document.getElementById("message").value = "";
   loadComments();
 });
@@ -171,7 +175,7 @@ document.getElementById("DiscussionForm").addEventListener("submit", async (e) =
 
   const name = document.getElementById("name").value;
   const title = document.getElementById("DiscussionTitle").value;
-  const DisccutionId = crypto.randomUUID();
+  const DiscussionId = crypto.randomUUID();
 
   await fetch(WORKER_URL, {
     method: "POST",
@@ -181,15 +185,18 @@ document.getElementById("DiscussionForm").addEventListener("submit", async (e) =
       message: title,
       parent: null })
   });
-  DisccusionId,
+  DiscussionId,
 
-  location.href = `?Discussion=${DisccutionId}`;
+  location.href = `?Discussion=${DiscussionId}`;
 });
 
 /* -----------------------------------
    返信投稿
 ----------------------------------- */
 function replyTo(parentId) {
+  const params = new URLSearchParams(location.search);
+  const DiscussionId = params.get("Discussion");
+
   const name = prompt("名前");
   const message = prompt("返信内容");
 
@@ -198,7 +205,7 @@ function replyTo(parentId) {
   fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, message, parent: parentId })
+    body: JSON.stringify({ DiscussionId, name, message, parent: parentId })
   }).then(() => loadComments());
 }
 
