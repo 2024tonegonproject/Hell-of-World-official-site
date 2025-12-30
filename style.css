@@ -76,9 +76,7 @@ body *.show {
   margin: 0 auto; 
   text-align: left;
 }
-.reply-box{
-  margin-left: 20px;
-}
+
 body { background:#000; color:white; font-family:sans-serif; }
 
   .comment-box {
@@ -95,7 +93,6 @@ body { background:#000; color:white; font-family:sans-serif; }
     margin: 5px 0;
   }
 
-  /* 下からフェード */
   .fade-up {
     opacity: 0;
     transform: translateY(30px);
