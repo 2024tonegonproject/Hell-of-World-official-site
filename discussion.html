@@ -113,6 +113,7 @@ function renderTree(comments, parentId, container, level) {
 ----------------------------------- */
 function renderComment(c, container, comments, level) {
   const div = document.createElement("div");
+  div.id = c.id;
   div.className = "comment-box fade-up show";
   div.style.marginLeft = (level * 20) + "px";
 
@@ -133,6 +134,7 @@ function renderComment(c, container, comments, level) {
 ----------------------------------- */
 function renderReply(c, container, comments, level) {
   const div = document.createElement("div");
+  div.id = c.id;
   div.className = "reply-box fade-up show";
   div.style.marginLeft = (level * 20) + "px";
 
@@ -177,19 +179,50 @@ document.getElementById("commentForm")?.addEventListener("submit", async (e) => 
    返信投稿（discussion対応）
 ----------------------------------- */
 function replyTo(parentId) {
-  const params = new URLSearchParams(location.search);
-  const discussionId = params.get("discussion");
+  // すでにフォームが出ていたら消す
+  const oldForm = document.getElementById("replyForm");
+  if (oldForm) oldForm.remove();
 
-  const name = prompt("名前");
-  const message = prompt("返信内容");
+  // フォームを作る
+  const form = document.createElement("div");
+  form.id = "replyForm";
+  form.style.margin = "10px 0";
+  form.style.padding = "10px";
+  form.style.border = "1px solid #ccc";
+  form.style.borderRadius = "6px";
+  form.style.background = "#fafafa";
 
-  if (!message) return;
+  form.innerHTML = `
+    <input id="replyName" placeholder="名前" style="display:block; margin-bottom:5px; width:200px;">
+    <textarea id="replyMessage" placeholder="返信内容" style="display:block; margin-bottom:5px; width:300px; height:60px;"></textarea>
+    <button id="replySend">送信</button>
+  `;
 
-  fetch(WORKER_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ discussionId, name, message, parent: parentId })
-  }).then(() => loadComments());
+  // 親コメントの下に挿入
+  const parentDiv = document.getElementById(parentId);
+  parentDiv.after(form);
+
+  // 送信処理
+  document.getElementById("replySend").onclick = async () => {
+    const name = document.getElementById("replyName").value;
+    const message = document.getElementById("replyMessage").value;
+
+    if (!message) return;
+
+    await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        discussionId: new URLSearchParams(location.search).get("discussion"),
+        name,
+        message,
+        parent: parentId
+      })
+    });
+
+    form.remove();
+    loadComments();
+  };
 }
 
 /* -----------------------------------
