@@ -27,6 +27,11 @@
     </script>
     <h2>ディスカッション(Githubアカウント不要)</h2>
 <div id="comments"></div>
+
+<form id="DiscussionForm">
+  <input id="DiscussionTitle" placeholder="ディスカッションタイトル">
+  <button>新しくディスカッションを立てる</button>
+</form>
 <form id="commentForm">
   <input type="text" id="name" placeholder="名前" required>
   <textarea id="message" placeholder="メッセージ" required></textarea>
@@ -52,6 +57,28 @@ async function loadComments() {
 
   // 親（parent=null）からツリー描画開始
   renderTree(comments, null, container, 0);
+}
+
+async function loadDisccusions() {
+  const res = await fetch(WORKER_URL);
+  const comments = await res.json();
+
+  const Discussion = {};
+
+  comments.forEach(c => {
+    if (!Discussion[c.DiscussionId]) {
+      Discussion[c.DiscussionId] = c;
+    }
+  });
+
+  const container = document.getElementById("Discussion");
+  container.innerHTML = "";
+
+  Object.values(Disccusion).forEach(t => {
+    const div = document.createElement("div");
+    div.innerHTML = `<a href="?Discussion=${t.DiscussionId}">${t.message}</a>`;
+    container.appendChild(div);
+  });
 }
 
 /* -----------------------------------
@@ -124,17 +151,39 @@ function renderReply(c, container, comments, level) {
 document.getElementById("commentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value;
-  const message = document.getElementById("message").value;
+  const params = new URLSearchParams(location.search);
+  const DisccusionId = params.get("Discussion");
 
   await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, message })
+    body: JSON.stringify({ DisccusionId, name, message })
   });
-
   document.getElementById("message").value = "";
   loadComments();
+});
+
+/* -----------------------------------
+   新規ディスカッション投稿
+----------------------------------- */
+document.getElementById("DiscussionForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const title = document.getElementById("DiscussionTitle").value;
+  const DisccutionId = crypto.randomUUID();
+
+  await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: "name",
+      message: title,
+      parent: null })
+  });
+  DisccusionId,
+
+  location.href = `?Discussion=${DisccutionId}`;
 });
 
 /* -----------------------------------
