@@ -76,3 +76,6 @@ body *.show {
   margin: 0 auto; 
   text-align: left;
 }
+.reply-box{
+  margin-left: 20px;
+}
