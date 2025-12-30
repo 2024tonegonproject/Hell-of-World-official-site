@@ -235,133 +235,136 @@ const observer = new IntersectionObserver((entries) => {
 
 targets.forEach(target => observer.observe(target));</script>
 <script>
-    const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";  
+const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";
 
-    async function loadComments() {
-      const res = await fetch(WORKER_URL);
-      const comments = await res.json();
+/* -----------------------------------
+   コメント一覧を読み込む
+----------------------------------- */
+async function loadComments() {
+  const res = await fetch(WORKER_URL);
+  const comments = await res.json();
 
-      const container = document.getElementById("comments");
-      container.innerHTML = "";
+  const container = document.getElementById("comments");
+  container.innerHTML = "";
 
-      renderTree(comments, null, container);
+  // 親（parent=null）からツリー描画開始
+  renderTree(comments, null, container, 0);
+}
 
-      const parents = comments.filter(c => !c.parent);
-      const replies = comments.filter(c => c.parent);
-
-      parents.sort((a, b) => b.date - a.date);
-
-      parents.forEach(parent => {
-        renderComment(parent, container);
-
-        replies
-          .filter(r => r.parent === parent.id)
-          .sort((a, b) => a.date - b.date)
-          .forEach(r => renderReply(r, container));
-      });
-    }
-
-    function renderComment(c, container) {
-      const div = document.createElement("div");
-      div.style.color = "white";
-      div.className = "comment-box";
-
-      const date = new Date(c.date).toLocaleString();
-
-      div.innerHTML = `
-        <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
-        ${c.message}<br>
-        <button onclick="replyTo('${c.id}')">返信</button>
-        <button onclick="deleteComment('${c.id}')">削除</button>
-      `;
-
-      div.classList.add("fade-up", "show");
-
-      container.appendChild(div);
-    }
-
-    function renderReply(c, container) {
-      const div = document.createElement("div");
-      div.className = "reply-box";
-
-      const date = new Date(c.date).toLocaleString();
-
-      const parentComment = comments.find(x => x.id === c.parent);
-      const parentName = parentComment ? parentComment.name : "不明";
-
-      div.innerHTML = `
-      ↳ <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
-      <span style="opacity:0.7;">@${parentName} </span><br>
-      ${c.message}<br>
-      <button onclick="replyTo('${c.id}')">返信</button>
-      <button onclick="deleteComment('${c.id}')">削除</button>` ;
-      div.classList.add("fade-up", "show");
-
-      container.appendChild(div);
-    }
-
-    document.getElementById("commentForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("name").value;
-      const message = document.getElementById("message").value;
-
-      await fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, message })
-      });
-
-      document.getElementById("message").value = "";
-      window.onload = function () { location.reload(true); };;
-    });
-
-    function replyTo(parentId) {
-      const name = prompt("名前");
-      const message = prompt("返信内容");
-
-      if (!message) return;
-
-      fetch(WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, message, parent: parentId })
-      }).then(() => loadComments);
-    }
-
-    function deleteComment(id) {
-      if (!confirm("本当に削除しますか？")) return;
-
-      fetch(WORKER_URL + "?id=" + id, {
-        method: "DELETE"
-      }).then(() => loadComments);
-    }
-    function renderTree(comments, parentId, container, level = 0) {
+/* -----------------------------------
+   無限ネスト対応のツリー描画
+----------------------------------- */
+function renderTree(comments, parentId, container, level) {
   comments
     .filter(c => c.parent === parentId)
     .sort((a, b) => a.date - b.date)
     .forEach(c => {
-      const div = document.createElement("div");
-      div.className = level === 0 ? "comment-box" : "reply-box";
-      div.style.marginLeft = (level * 20) + "px";
+      if (level === 0) {
+        renderComment(c, container, comments, level);
+      } else {
+        renderReply(c, container, comments, level);
+      }
 
-      const date = new Date(c.date).toLocaleString();
-
-      div.innerHTML = `
-        <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
-        ${c.message}<br>
-        <button onclick="replyTo('${c.id}')">返信</button>
-        <button onclick="deleteComment('${c.id}')">削除</button>
-      `;
-
-      container.appendChild(div);
-
-      // ★ 再帰呼び出し（ここがポイント）
+      // 再帰（子コメントを描画）
       renderTree(comments, c.id, container, level + 1);
     });
 }
 
-    loadComments();
-  </script>
+/* -----------------------------------
+   親コメントの描画
+----------------------------------- */
+function renderComment(c, container, comments, level) {
+  const div = document.createElement("div");
+  div.className = "comment-box fade-up show";
+  div.style.marginLeft = (level * 20) + "px";
+
+  const date = new Date(c.date).toLocaleString();
+
+  div.innerHTML = `
+    <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    ${c.message}<br>
+    <button onclick="replyTo('${c.id}')">返信</button>
+    <button onclick="deleteComment('${c.id}')">削除</button>
+  `;
+
+  container.appendChild(div);
+}
+
+/* -----------------------------------
+   返信コメントの描画
+----------------------------------- */
+function renderReply(c, container, comments, level) {
+  const div = document.createElement("div");
+  div.className = "reply-box fade-up show";
+  div.style.marginLeft = (level * 20) + "px";
+
+  const date = new Date(c.date).toLocaleString();
+
+  // 親コメントの名前を取得
+  const parentComment = comments.find(x => x.id === c.parent);
+  const parentName = parentComment ? parentComment.name : "不明";
+
+  div.innerHTML = `
+    ↳ <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    <span style="opacity:0.7;">@${parentName} さんへ</span><br>
+    ${c.message}<br>
+    <button onclick="replyTo('${c.id}')">返信</button>
+    <button onclick="deleteComment('${c.id}')">削除</button>
+  `;
+
+  container.appendChild(div);
+}
+
+/* -----------------------------------
+   新規コメント投稿
+----------------------------------- */
+document.getElementById("commentForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const message = document.getElementById("message").value;
+
+  await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, message })
+  });
+
+  document.getElementById("message").value = "";
+  loadComments();
+});
+
+/* -----------------------------------
+   返信投稿
+----------------------------------- */
+function replyTo(parentId) {
+  const name = prompt("名前");
+  const message = prompt("返信内容");
+
+  if (!message) return;
+
+  fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, message, parent: parentId })
+  }).then(() => loadComments());
+}
+
+/* -----------------------------------
+   コメント削除
+----------------------------------- */
+function deleteComment(id) {
+  if (!confirm("本当に削除しますか？")) return;
+
+  fetch(WORKER_URL + "?id=" + id, {
+    method: "DELETE"
+  }).then(() => loadComments());
+}
+
+/* -----------------------------------
+   初回ロード
+----------------------------------- */
+loadComments();
+</script>
 </body>
 </html>
