@@ -343,6 +343,13 @@ function renderReply(c, container, comments, level) {
     ↳ <strong>${c.name}</strong> (${date})<br>
     @${parentName}<br>
     ${c.message}<br>
+
+    <div style="margin-top:10px;">
+      <input id="replyName_${c.id}" placeholder="名前" style="width:120px;">
+      <input id="replyMsg_${c.id}" placeholder="返信内容" style="width:200px;">
+      <button onclick="sendReply('${c.id}')">送信</button>
+    </div>
+
     <button onclick="deleteComment('${c.id}')">削除</button>
   `;
 
