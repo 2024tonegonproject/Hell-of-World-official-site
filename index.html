@@ -304,16 +304,25 @@ function renderComment(c, container, comments, level) {
 
   const date = new Date(c.date).toLocaleString();
 
+  // 返信があるかどうか
   const hasReplies = comments.some(x => x.parent === c.id);
 
   div.innerHTML = `
     <strong>${c.name}</strong> (${date})<br>
     ${c.message}<br>
 
-    <button onclick="toggleReplies('${c.id}')">返信を表示</button>
+    ${hasReplies ? `<button onclick="toggleReplies('${c.id}')">返信を表示</button>` : ""}
     <button onclick="deleteComment('${c.id}')">削除</button>
 
-    <div id="replies_${c.id}" style="display:none; margin-left:20px;"></div>
+    <div id="replies_${c.id}" style="display:none; margin-left:20px;">
+
+      <div style="margin-top:10px;">
+        <input id="replyName_${c.id}" placeholder="名前" style="width:120px;">
+        <input id="replyMsg_${c.id}" placeholder="返信内容" style="width:200px;">
+        <button onclick="sendReply('${c.id}')">送信</button>
+      </div>
+
+    </div>
   `;
 
   container.appendChild(div);
