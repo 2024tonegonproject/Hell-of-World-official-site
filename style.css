@@ -7,6 +7,11 @@ a {
   color: #ffff00;
 }
 
+a:hover {
+  color: #ff2020;
+}
+
+
 h1 {
   font-size: 28px;
   margin-top: 40px;
