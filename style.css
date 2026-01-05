@@ -3,6 +3,10 @@
   src: url("fonts/JF-Dot-Ayu-18.woff") format("woff");
 }
 
+a {
+  color: ffff00;
+}
+
 h1 {
   font-size: 28px;
   margin-top: 40px;
