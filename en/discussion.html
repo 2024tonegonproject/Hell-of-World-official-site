@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en_US">
+<head>
+  <meta charset="UTF-8">
+  <title>Discussion Forum</title>
+  <link rel="stylesheet" href="discussion.css">
+</head>
+<body>
+  <h1>Discussion + HOW Studio: All Works Featured</h1>
+  <h2>Studio's Works List</h2>
+  <div id="scratch-projects"></div>
+  
+      <h2>Discussion (No GitHub account required)</h2>
+</form>
+<form id="commentForm">
+  <input type="text" id="name" placeholder="Name" required>
+  <textarea id="message" placeholder="Message" required></textarea>
+  <button type="submit">Send</button>
+</form>
+    <div id="comments"></div>
+
+<h5>© 2026 2024tonegonproject | Hell of World © 2026 Siratama1538 | UNDERTALE © Toby Fox 2013–2026. All rights reserved.<br>
+      This site Is a UNDERTALE's fan-made game "Hell of World" site.<br><br>
+      </h5>
+<script src="/fade.js"></script>
+<script>
+const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";
+
+async function loadComments() {
+  const params = new URLSearchParams(location.search);
+  const discussionId = params.get("discussion");
+
+  const res = await fetch(WORKER_URL);
+  const comments = await res.json();
+
+  console.log("取得した comments:", comments); 
+
+  if (!discussionId) {
+    loadDiscussions(comments);
+    return;
+  }
+
+  const filtered = comments.filter(c => c.discussionId === discussionId);
+
+  const container = document.getElementById("comments");
+  container.innerHTML = "";
+
+  renderTree(filtered, null, container, 0);
+}
+
+
+/* -----------------------------------
+   無限ネスト対応のツリー描画
+----------------------------------- */
+function renderTree(comments, parentId, container, level) {
+  comments
+    .filter(c => c.parent === parentId)
+    .sort((a, b) => b.date - a.date)
+    .forEach(c => {
+      if (level === 0) {
+        renderComment(c, container, comments, level);
+      } else {
+        renderReply(c, container, comments, level);
+      }
+
+      renderTree(comments, c.id, container, level + 1);
+    });
+}
+
+/* -----------------------------------
+   親コメントの描画
+----------------------------------- */
+function renderComment(c, container, comments, level) {
+  const div = document.createElement("div");
+  div.id = c.id;
+  div.className = "comment-box fade-up show";
+  div.style.marginLeft = (level * 20) + "px";
+
+  const date = new Date(c.date).toLocaleString();
+
+  div.innerHTML = `
+    <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    ${c.message}<br>
+    <button onclick="replyTo('${c.id}')">Reply</button>
+    <button onclick="deleteComment('${c.id}')">Delete</button>
+  `;
+
+  container.appendChild(div);
+}
+
+/* -----------------------------------
+   返信コメントの描画
+----------------------------------- */
+function renderReply(c, container, comments, level) {
+  const div = document.createElement("div");
+  div.id = c.id;
+  div.className = "reply-box fade-up show";
+  div.style.marginLeft = (level * 20) + "px";
+
+  const date = new Date(c.date).toLocaleString();
+  const parentComment = comments.find(x => x.id === c.parent);
+  const parentName = parentComment ? parentComment.name : "不明";
+
+  div.innerHTML = `
+    ↳ <strong>${c.name}</strong> <span style="opacity:0.7;">(${date})</span><br>
+    <span style="opacity:0.7;">@${parentName}</span><br>
+    ${c.message}<br>
+    <button onclick="replyTo('${c.id}')">Reply</button>
+    <button onclick="deleteComment('${c.id}')">Delete</button>
+  `;
+
+  container.appendChild(div);
+}
+
+/* -----------------------------------
+   新規コメント投稿（discussion対応）
+----------------------------------- */
+document.getElementById("commentForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const params = new URLSearchParams(location.search);
+  const discussionId = params.get("discussion");
+
+  const name = document.getElementById("name").value;
+  const message = document.getElementById("message").value;
+
+  await fetch(WORKER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ discussionId, name, message })
+  });
+
+  document.getElementById("message").value = "";
+  loadComments();
+});
+
+/* -----------------------------------
+   返信投稿（discussion対応）
+----------------------------------- */
+function replyTo(parentId) {
+  // すでにフォームが出ていたら消す
+  const oldForm = document.getElementById("replyForm");
+  if (oldForm) oldForm.remove();
+
+  // フォームを作る
+  const form = document.createElement("div");
+  form.id = "replyForm";
+  form.style.margin = "10px 0";
+  form.style.padding = "10px";
+  form.style.border = "1px solid #ccc";
+  form.style.borderRadius = "6px";
+  form.style.background = "#fafafa";
+
+  form.innerHTML = `
+    <input id="replyName" placeholder="Name" style="display:block; margin-bottom:5px; width:200px;">
+    <textarea id="replyMessage" placeholder="Message" style="display:block; margin-bottom:5px; width:300px; height:60px;"></textarea>
+    <button id="replySend">Send</button>
+  `;
+
+  // 親コメントの下に挿入
+  const parentDiv = document.getElementById(parentId);
+  parentDiv.after(form);
+
+  // 送信処理
+  document.getElementById("replySend").onclick = async () => {
+    const name = document.getElementById("replyName").value;
+    const message = document.getElementById("replyMessage").value;
+
+    if (!message) return;
+
+    await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        discussionId: new URLSearchParams(location.search).get("discussion"),
+        name,
+        message,
+        parent: parentId
+      })
+    });
+
+    form.remove();
+    loadComments();
+  };
+}
+
+/* -----------------------------------
+   コメント削除
+----------------------------------- */
+function deleteComment(id) {
+  if (!confirm("delete?")) return;
+
+  fetch(WORKER_URL + "?id=" + id, {
+    method: "DELETE"
+  }).then(() => loadComments());
+}
+
+/* -----------------------------------
+   初回ロード
+----------------------------------- */
+loadComments();
+</script>
+
+</body>
+</html>

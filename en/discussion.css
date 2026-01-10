@@ -1,0 +1,88 @@
+@font-face {
+  font-family: "JF-Dot-Ayu18";
+  src: url("/Hell-of-World-official-site/fonts/8bitoperator-JVE.woff") format("woff");
+}
+
+h1 {
+  font-size: 26px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 22px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 18px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+h5 {
+  font-size: 14px;
+  text-align: center;
+}
+
+body {
+  font-size: 14px;
+  font-family: "JF-Dot-Ayu18","Yu Gothic",sans-serif;
+  margin-top: 5px;
+  background-color: #000;
+  color: #fff;
+}
+p {
+    text-align: center;
+}
+.ctrs {
+  text-align: center;
+}
+.Icons {
+  width: 30px;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+.name {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#scratch-projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.scratch-thumb {
+  width: 200px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.comment-box {
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+  }
+
+  .reply-box {
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px 0;
+  }
