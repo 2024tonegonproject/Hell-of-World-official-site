@@ -3,7 +3,7 @@ fetch("https://2024tonegonproject.github.io/Hell-of-World-official-site/projects
   .then(projects => {
     const container = document.getElementById("scratch-projects");
 
-    projects.forEach((item, index) => {
+   projects.forEach((item, index) => {
   const card = document.createElement("div");
   card.classList.add("project-card");
 
@@ -20,10 +20,16 @@ fetch("https://2024tonegonproject.github.io/Hell-of-World-official-site/projects
   title.classList.add("project-title");
   title.textContent = item.title;
 
+  const author = document.createElement("div");
+  author.classList.add("project-author");
+  author.textContent = `by ${item.author}`;
+
   link.appendChild(img);
   card.appendChild(link);
   card.appendChild(title);
+  card.appendChild(author);
   container.appendChild(card);
 });
+
 
   });
