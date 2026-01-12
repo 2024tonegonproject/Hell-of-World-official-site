@@ -4,19 +4,13 @@ fetch("https://2024tonegonproject.github.io/Hell-of-World-official-site/projects
     const container = document.getElementById("scratch-projects");
 
     projects.forEach((item, index) => {
-      const id = item.id;
-      const image = item.image;
-
-      const thumb = `image`;
-
       const link = document.createElement("a");
-      link.href = `https://scratch.mit.edu/projects/${id}/`;
+      link.href = `https://scratch.mit.edu/projects/${item.id}/`;
       link.target = "_blank";
 
       const img = document.createElement("img");
-      img.src = thumb;
+      img.src = item.image;              // ← JSON の image をそのまま使う
       img.classList.add("scratch-thumb");
-
       img.style.animationDelay = `${index * 0.1}s`;
 
       link.appendChild(img);
