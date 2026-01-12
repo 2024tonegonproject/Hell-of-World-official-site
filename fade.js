@@ -29,7 +29,7 @@ fetch("https://2024tonegonproject.github.io/Hell-of-World-official-site/projects
   
   link.appendChild(img);
   card.appendChild(link);
-  card.appendChild(title);
+  card.appendChild(titleLink);
   card.appendChild(author);
   container.appendChild(card);
 });
