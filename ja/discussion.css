@@ -81,6 +81,7 @@ p {
   margin-top: 6px; 
   font-size: 14px; 
   opacity: 0;
+  display: block;
   transform: translateY(20px);
   animation: fadeUp 0.6s ease forwards;
 } 
@@ -88,6 +89,7 @@ p {
   margin-top: 2px; 
   font-size: 12px; 
   opacity: 0;
+  display: block;
   transform: translateY(20px);
   animation: fadeUp 0.6s ease forwards;
 }
