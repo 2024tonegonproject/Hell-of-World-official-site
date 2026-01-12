@@ -1,4 +1,4 @@
-fetch("https://api.scratch.mit.edu/studios/50976499/projects?v=" + Date.now())
+fetch("projects.json?v=" + Date.now())
   .then(res => res.json())
   .then(projects => {
     const container = document.getElementById("scratch-projects");
