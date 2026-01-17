@@ -52,7 +52,20 @@
 17.模写系といったトレースなどのをしたFAは控えること、トレースした絵は公開するのは禁止だが絵の練習などにすることは許可しておりトレースして描いたものはネット上に公開しないこと。また自作発言はしないこと
 
 18.曲や音,スプライトなどが著作者がフリーで許可されているものはスクラッチやyoutubeなどで許可なく使ってもよい、ただしクレジット表記をすることと、自作発言は必ずやめること
-</p> 
-<script href="/Hell-of-World-official-site/fade.js"></script>
+</p>
+ 
+<script>
+const targets = document.querySelectorAll('body *');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+      observer.unobserve(entry.target);
+    }
+  });
+});
+targets.forEach(target => observer.observe(target));
+</script>
+
 </body>
 </html>
