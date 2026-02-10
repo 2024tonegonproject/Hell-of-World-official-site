@@ -15,8 +15,8 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  // Worker に GET で渡す
-  location.href = `https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth?privateCode=${privateCode}`;
+
+  location.href = `https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth`;
 }
 </script>
 </body>
