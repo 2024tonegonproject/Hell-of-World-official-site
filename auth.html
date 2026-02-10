@@ -12,28 +12,14 @@
 <script>
 const url = new URL(location.href);
 const privateCode = url.searchParams.get("privateCode");
-const publicCode = url.searchParams.get("publicCode");
 
-if (!privateCode || !publicCode) {
+if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  fetch("https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ privateCode, publicCode })
-  })
-  .then(r => r.json())
-  .then(data => {
-    console.log("Worker response:", data);
-
-    if (data.ok) {
-      localStorage.setItem("scratchUser", data.username);
-      location.href = "https://2024tonegonproject.github.io/Hell-of-World-official-site/";
-    } else {
-      document.body.innerHTML = "ログイン失敗";
-    }
-  });
+  // Worker に GET で渡す
+  location.href = `https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth?privateCode=${privateCode}`;
 }
 </script>
+
 </body>
 </html>
