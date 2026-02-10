@@ -10,19 +10,22 @@
 <h2>ログイン処理中...</h2>
 
 <script>
-const params = new URLSearchParams(location.search);
-const privateCode = params.get("privateCode");
+const url = new URL(location.href);
+const privateCode = url.searchParams.get("privateCode");
+const publicCode = url.searchParams.get("publicCode");
 
-if (!privateCode) {
+if (!privateCode || !publicCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
   fetch("https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ privateCode })
+    body: JSON.stringify({ privateCode, publicCode })
   })
   .then(r => r.json())
   .then(data => {
+    console.log("Worker response:", data);
+
     if (data.ok) {
       localStorage.setItem("scratchUser", data.username);
       location.href = "https://2024tonegonproject.github.io/Hell-of-World-official-site/";
