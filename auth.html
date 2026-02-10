@@ -18,7 +18,7 @@ if (!privateCode || !publicCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
   fetch("https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth", {
-    method: "POST",
+    method: "GET",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ privateCode, publicCode })
   })
