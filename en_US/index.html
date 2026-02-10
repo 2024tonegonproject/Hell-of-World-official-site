@@ -249,19 +249,47 @@
     </p>
         <h1>Comments</h1>
     <form id="commentForm">
-  <input type="text" id="name" placeholder="Name" required>
-  <textarea id="message" placeholder="Message" required></textarea>
-  <button type="submit">Send</button>
-</form>
-    <div class="no-fade" id="comments"></div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <input type="text" id="name" placeholder="Name" required>
+        <button type="button" id="loginScratch">Login with Scratch</button>
+        <button id="logoutBtn" style="display:none;" onclick="logout()">Log OUT</button>
+      </div>
 
-    
-    <a href="https://auth.itinerary.eu.org/auth?redirect=https%253A%252F%252F2024tonegonproject.github.io%252FHell-of-World-official-site%252Fcallback.html">Scratch でログイン(ベータ版)</a>
+      <textarea id="message" placeholder="Message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+
+    <div class="no-fade" id="comments"></div>
     
       <h5>© 2026 2024tonegonproject | Hell of World © 2026 Siratama1538 | UNDERTALE © Toby Fox 2013–2026. All rights reserved.<br>
       This site Is a UNDERTALE's fan-made game "Hell of World" site.<br>
       </h5>
 <script>
+    const ADMINS = [
+      "2024ToNegOnpROJeCt",
+      "siratama1538",
+      "Yuufu_SCYT_pro42",
+      "Futurary_Watcher",
+      "FLANCYS"
+    ];
+
+    const ICONS = {
+    "2024ToNegOnpROJeCt": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/animation.gif",
+    "siratama1538": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/Siratama1538.png",
+    "Yuufu_SCYT_pro42": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/Yuufu_New.png",
+    "dustxyz": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/dustxyz.png",
+    "take_take_take": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/take.png",
+    "Heroburain666": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/Heroburain.gif",
+    "Lightblue1412": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/default.png",
+    "Futurary_Watcher": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/futur_watc.png",
+    "Xx_void_solo_xX": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/void_solo.jpg",
+    "Jellyfish3955": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/Jellyfosh3955.png",
+    "kurigohan_dayo": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/kurigohan.png",
+    "yossi2057": "https://2024tonegonproject.github.io/Hell-of-World-official-site/images/yossi2057.png",
+    "kourizusi": "https://cdn2.scratch.mit.edu/get_image/user/148909668_32x32.png",
+    "tuttuDESU0134": "https://cdn2.scratch.mit.edu/get_image/user/159616384_32x32.png"
+  };
+  //fadeとかの類
 const targets = document.querySelectorAll('body *');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -275,6 +303,8 @@ targets.forEach(target => observer.observe(target));
 </script>
 
 <script>
+//コメント
+
 const WORKER_URL = "https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/";
 
 /* -----------------------------------
@@ -319,7 +349,17 @@ function renderTree(comments, parentId, container, level) {
    親コメント描画
 ----------------------------------- */
 function renderComment(c, container, comments, level) {
+
+  const raw = c.rawName || "";
+  const iconPath = ICONS[raw];
+
+  const iconHTML = iconPath
+    ? `<img src="${iconPath}" class="icon">`
+    : "";
+
+  const rank = c.rank ? `<span class="rank">${c.rank}</span>` : "";
   const div = document.createElement("div");
+  const displayName = c.name;
   div.id = "c_" + c.id;
   div.className = "comment-box";
   div.style.marginLeft = (level * 20) + "px";
@@ -329,21 +369,34 @@ function renderComment(c, container, comments, level) {
   // 返信があるかどうか
   const hasReplies = comments.some(x => x.parent === c.id);
 
-  div.innerHTML = `
-    <strong>${c.name}</strong> (${date})<br>
+  const user = localStorage.getItem("scratchUser");
+  const isAdmin = ADMINS.includes(user);
+
+div.innerHTML = `
+    ${iconHTML}
+    <strong>${displayName}</strong> ${rank} (${date})<br>
     ${c.message}<br>
 
-    ${hasReplies ? `<button onclick="toggleReplies('${c.id}')">Show Replys</button>` : ""}
-    <button onclick="deleteComment('${c.id}')">Delete</button>
+    ${hasReplies ? `<button onclick="toggleReplies('${c.id}')">Show Replies</button>` : ""}
+    ${isAdmin ? `<button onclick="deleteComment('${c.id}')">Delete</button>` : ""}
 
     <div id="replies_${c.id}" style="display:none; margin-left:20px;"></div>
 
     <div style="margin-top:10px;">
       <input id="replyName_${c.id}" placeholder="Name" style="width:120px;">
-      <input id="replyMsg_${c.id}" placeholder="<Message>" style="width:200px;">
+      <input id="replyMsg_${c.id}" placeholder="Message" style="width:200px;">
       <button onclick="sendReply('${c.id}')">Send</button>
     </div>
-  `;
+`;
+
+  if (user) {
+    const nameBox = div.querySelector(`#replyName_${c.id}`);
+    if (nameBox) {
+      nameBox.style.display = "none";
+      nameBox.removeAttribute("required");
+    }
+  }
+
 
   container.appendChild(div);
 }
@@ -352,17 +405,32 @@ function renderComment(c, container, comments, level) {
    返信コメント描画
 ----------------------------------- */
 function renderReply(c, container, comments, level) {
+  const raw = c.rawName || "";
+  const iconPath = ICONS[raw];
+
+  const iconHTML = iconPath
+    ? `<img src="${iconPath}" class="icon">`
+    : "";
+
+  const rank = c.rank ? `<span class="rank">${c.rank}</span>` : "";
   const div = document.createElement("div");
-  div.className = "reply-box";
-  div.style.marginLeft = (level * 20) + "px";
 
   const date = new Date(c.date).toLocaleString();
   const parent = comments.find(x => x.id === c.parent);
-  const parentName = parent ? parent.name : "不明";
+  const parentName = parent ? parent.name : "UNKNOWN";
+  const displayName = c.name;
+  const displayParent = parent ? parent.name : "UNKNOWN";
 
-  div.innerHTML = `
-    ↳ <strong>${c.name}</strong> (${date})<br>
-    @${parentName}<br>
+  div.className = "reply-box";
+  div.style.marginLeft = (level * 20) + "px";
+
+  const user = localStorage.getItem("scratchUser");
+  const isAdmin = ADMINS.includes(user);
+
+div.innerHTML = `
+    ${iconHTML}
+    ↳ <strong>${displayName}</strong> ${rank} (${date})<br>
+    @${displayParent}<br>
     ${c.message}<br>
 
     <div style="margin-top:10px;">
@@ -371,8 +439,16 @@ function renderReply(c, container, comments, level) {
       <button onclick="sendReply('${c.id}')">Send</button>
     </div>
 
-    <button onclick="deleteComment('${c.id}')">delete</button>
-  `;
+    ${isAdmin ? `<button onclick="deleteComment('${c.id}')">Delete</button>` : ""}
+`;
+
+  if (user) {
+    const nameBox = div.querySelector(`#replyName_${c.id}`);
+    if (nameBox) {
+      nameBox.style.display = "none";
+      nameBox.removeAttribute("required");
+    }
+  }
 
   container.appendChild(div);
 }
@@ -384,7 +460,11 @@ function renderReply(c, container, comments, level) {
 document.getElementById("commentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value;
+  let name = localStorage.getItem("scratchUser");
+  if (!name) {
+    name = document.getElementById("name").value;
+  }
+
   const message = document.getElementById("message").value;
 
   await fetch(WORKER_URL, {
@@ -414,7 +494,7 @@ function replyTo(parentDomId) {
   form.innerHTML = `
     <input id="replyName" placeholder="Name" style="display:block; margin-bottom:5px;">
     <textarea id="replyMessage" placeholder="Message" style="display:block; margin-bottom:5px;"></textarea>
-    <button id="replySend">Reply</button>
+    <button id="replySend">Send</button>
   `;
 
   const parentDiv = document.getElementById(parentDomId);
@@ -444,30 +524,29 @@ function replyTo(parentDomId) {
    コメント削除
 ----------------------------------- */
 function deleteComment(id) {
-  if (!confirm("Delete? (Please do not delete other people's comments)")) return;
+  if (!confirm("Delete This Comment?")) return;
 
   fetch(WORKER_URL + "?id=" + id, { method: "DELETE" })
     .then(() => loadComments());
 }
 
 async function sendReply(parentId) {
-  const name = document.getElementById("replyName_" + parentId).value;
-  const message = document.getElementById("replyMsg_" + parentId).value;
+  let name = localStorage.getItem("scratchUser");
 
+  if (!name) {
+    name = document.getElementById("replyName_" + parentId).value;
+  }
+
+  const message = document.getElementById("replyMsg_" + parentId).value;
   if (!message) return;
 
   await fetch(WORKER_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name,
-      message,
-      parent: parentId
-    })
+    body: JSON.stringify({ name, message, parent: parentId })
   });
 
   await loadComments();
-
   toggleReplies(parentId);
 }
 /* -----------------------------------
@@ -482,6 +561,45 @@ function toggleReplies(id) {
    初回ロード
 ----------------------------------- */
 loadComments();
+</script>
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const user = localStorage.getItem("scratchUser");
+  if (user) {
+    document.getElementById("logoutBtn").style.display = "inline-block";
+  }
+});
+// Scratchログイン状態チェック
+const scratchUser = localStorage.getItem("scratchUser");
+
+window.addEventListener("DOMContentLoaded", () => {
+  const nameInput = document.getElementById("name");
+  const loginBtn = document.getElementById("loginScratch");
+
+  if (scratchUser) {
+    // 名前欄を隠す + required を外す
+    nameInput.style.display = "none";
+    nameInput.removeAttribute("required");
+
+    // ボタン表示を変更
+    loginBtn.innerText = "Currently logged in as" + scratchUser;
+  }
+});
+
+function logout() {
+  localStorage.removeItem("scratchUser");
+  alert("You have logged out");
+  location.reload();
+}
+
+// ScratchAuth リダイレクト先
+const REDIRECT_URL = btoa("https://howutau.tgrk-2024tgproject-official.workers.dev/" + "/auth");
+
+document.getElementById("loginScratch").onclick = () => {
+  location.href =
+    `https://auth.itinerary.eu.org/auth/?redirect=${REDIRECT_URL}&name=Hell of World Official Site`;
+};
 </script>
 
 </body>
