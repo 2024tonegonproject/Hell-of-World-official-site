@@ -8,7 +8,6 @@
 </head>
 <body>
 <h2>ログイン処理中...</h2>
-
 <script>
 const url = new URL(location.href);
 const privateCode = url.searchParams.get("privateCode");
@@ -20,6 +19,5 @@ if (!privateCode) {
   location.href = `https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth?privateCode=${privateCode}`;
 }
 </script>
-
 </body>
 </html>
