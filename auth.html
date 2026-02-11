@@ -20,8 +20,9 @@ if (!privateCode) {
     .then(data => {
       if (data.ok) {
         document.body.innerHTML = `ログイン成功！ ユーザー名: ${data.username}`;
-      } else {
-        document.body.innerHTML = "ログイン失敗";
+        setTimeout(() => {
+          location.href = "https://2024tonegonproject.github.io/Hell-of-World-official-site/"; 
+        }, 100);
       }
     })
     .catch(err => {
