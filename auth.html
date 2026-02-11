@@ -14,20 +14,16 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${privateCode}`)
+  fetch("saapi.workers.dev/?privateCode=" + privateCode)
     .then(r => r.json())
     .then(data => {
       if (data.valid) {
         localStorage.setItem("username", data.username);
-        location.href = "https://2024tonegonproject.github.io/Hell-of-World-official-site/";
+        location.href = "/Hell-of-World-official-site/";
       } else {
-        document.body.innerHTML = "ログイン失敗しました";
+        document.body.innerHTML = "ログイン失敗";
       }
-    })
-    .catch(err => {
-      document.body.innerHTML = "エラーが発生しました";
-      console.error(err);
-    });
+  });
 }
 </script>
 
