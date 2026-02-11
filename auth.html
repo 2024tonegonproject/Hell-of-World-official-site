@@ -15,8 +15,19 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-
-  location.href = `https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth`;
+  fetch(`https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth?privateCode=${privateCode}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        document.body.innerHTML = `ログイン成功！ ユーザー名: ${data.username}`;
+      } else {
+        document.body.innerHTML = "ログイン失敗";
+      }
+    })
+    .catch(err => {
+      document.body.innerHTML = "エラーが発生しました";
+      console.error(err);
+    });
 }
 </script>
 </body>
