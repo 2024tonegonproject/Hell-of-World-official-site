@@ -2,12 +2,11 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Hell Of World公式ホームページ</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="/images/Icon.png">
+  <title>ログイン処理中...</title>
 </head>
 <body>
 <h2>ログイン処理中...</h2>
+
 <script>
 const url = new URL(location.href);
 const privateCode = url.searchParams.get("privateCode");
@@ -15,15 +14,14 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  fetch(`https://noisy-sound-60af.tgrk-2024tgproject-official.workers.dev/auth?privateCode=${privateCode}`)
+  fetch(`https://auth-api.itinerary.eu.org/auth/verifyToken/${privateCode}`)
     .then(r => r.json())
     .then(data => {
-      if (data.ok) {
-        document.body.innerHTML = `ログイン成功！ ユーザー名: ${data.username}`;
-        setTimeout(() => {
-          localStorage.setItem("username", data.username);
-          location.href = "https://2024tonegonproject.github.io/Hell-of-World-official-site/"; 
-        },100);
+      if (data.valid) {
+        localStorage.setItem("username", data.username);
+        location.href = "https://2024tonegonproject.github.io/Hell-of-World-official-site/";
+      } else {
+        document.body.innerHTML = "ログイン失敗しました";
       }
     })
     .catch(err => {
@@ -32,5 +30,6 @@ if (!privateCode) {
     });
 }
 </script>
+
 </body>
 </html>
