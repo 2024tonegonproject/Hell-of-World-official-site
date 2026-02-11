@@ -14,7 +14,7 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  fetch("saapi.workers.dev/?privateCode=" + privateCode)
+  fetch("https://saapi.tgrk-2024tgproject-official.workers.dev/?privateCode=" + privateCode)
     .then(r => r.json())
     .then(data => {
       if (data.valid) {
