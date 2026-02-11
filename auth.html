@@ -19,6 +19,7 @@ if (!privateCode) {
     .then(data => {
       if (data.valid) {
         localStorage.setItem("username", data.username);
+        console.log(data);
         location.href = "/Hell-of-World-official-site/";
       } else {
         document.body.innerHTML = "ログイン失敗";
