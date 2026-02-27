@@ -250,12 +250,13 @@
         <h1>Comments</h1>
     <form id="commentForm">
       <div style="display:flex; gap:10px; align-items:center;">
-        <input type="text" id="name" placeholder="Name" required>
-        <button id="logoutBtn" style="display:none;" onclick="logout()">Log OUT</button>
+        <input type="text" id="name" placeholder="名前" required>
+        <button id="loginScratch">Log in</button>
+        <button id="logoutBtn" style="display:none;" onclick="logout()">Log out</button>
       </div>
 
-      <textarea id="message" placeholder="Message" required></textarea>
-      <button type="submit">Send</button>
+      <textarea id="message" placeholder="メッセージ" required></textarea>
+      <button type="submit">送信</button>
     </form>
 
     <div class="no-fade" id="comments"></div>
@@ -569,7 +570,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("logoutBtn").style.display = "inline-block";
   }
 });
-// Scratchログイン状態チェック
+
 const scratchUser = localStorage.getItem("scratchUser");
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -577,29 +578,25 @@ window.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.getElementById("loginScratch");
 
   if (scratchUser) {
-    // 名前欄を隠す + required を外す
     nameInput.style.display = "none";
     nameInput.removeAttribute("required");
 
-    // ボタン表示を変更
-    loginBtn.innerText = "Currently logged in as" + scratchUser;
+    loginBtn.innerText = scratchUser + " としてログイン中";
   }
 });
 
 function logout() {
   localStorage.removeItem("scratchUser");
-  alert("You have logged out");
+  alert("ログアウトしました");
   location.reload();
 }
 
-// ScratchAuth リダイレクト先
-const REDIRECT_URL = btoa("https://howutau.tgrk-2024tgproject-official.workers.dev/" + "/auth");
+const REDIRECT_URL = "https://howutau.tgrk-2024tgproject-official.workers.dev/" + "auth"
 
 document.getElementById("loginScratch").onclick = () => {
   location.href =
-    `https://auth.itinerary.eu.org/auth/?redirect=${REDIRECT_URL}&name=Hell of World Official Site`;
+    `https://forcommentauth.tgrk-2024tgproject-official.workers.dev/?redirect=${REDIRECT_URL}`;
 };
 </script>
-
 </body>
 </html>
