@@ -558,7 +558,6 @@ function toggleReplies(id) {
 ----------------------------------- */
 loadComments();
 </script>
-
 <script>
 window.addEventListener("DOMContentLoaded", () => {
   const user = localStorage.getItem("scratchUser");
@@ -566,7 +565,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("logoutBtn").style.display = "inline-block";
   }
 });
-// Scratchログイン状態チェック
+
 const scratchUser = localStorage.getItem("scratchUser");
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -574,12 +573,10 @@ window.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.getElementById("loginScratch");
 
   if (scratchUser) {
-    // 名前欄を隠す + required を外す
     nameInput.style.display = "none";
     nameInput.removeAttribute("required");
 
-    // ボタン表示を変更
-    loginBtn.innerText = scratchUser + "としてログイン中";
+    loginBtn.innerText = scratchUser + " としてログイン中";
   }
 });
 
@@ -589,12 +586,11 @@ function logout() {
   location.reload();
 }
 
-// ScratchAuth リダイレクト先
-const REDIRECT_URL = btoa("https://2024tonegonproject.github.io/Hell-of-World-official-site" + "/auth/");
+const REDIRECT_URL = "https://howutau.tgrk-2024tgproject-official.workers.dev/" + "auth"
 
 document.getElementById("loginScratch").onclick = () => {
   location.href =
-    `https://auth.itinerary.eu.org/auth/?redirect=${REDIRECT_URL}&name=Hell of World 公式サイト`;
+    `https://forcommentauth.tgrk-2024tgproject-official.workers.dev/?redirect=${REDIRECT_URL}`;
 };
 </script>
 

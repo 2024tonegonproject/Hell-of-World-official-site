@@ -2,7 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ログイン処理中...</title>
+  <title>Hell Of World公式ホームページ</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/images/Icon.png">
 </head>
 <body>
 <h2>ログイン処理中...</h2>
@@ -14,20 +16,23 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  fetch("https://saapi.tgrk-2024tgproject-official.workers.dev/?privateCode=" + privateCode)
+  fetch(`https://forcommentauth.tgrk-2024tgproject-official.workers.dev/api/verify?privateCode=${privateCode}`)
     .then(r => r.json())
     .then(data => {
-      if (data.valid) {
-        localStorage.setItem("username", data.username);
-        console.log(data);
-        location.href = "/Hell-of-World-official-site/";
-      } else {
-        document.body.innerHTML = "ログイン失敗";
-        console.log(data);
+      if (data.error) {
+        document.body.innerHTML = "認証に失敗しました";
+        return;
       }
-  });
+
+      localStorage.setItem("scratchUser", data.username);
+
+      location.href = "/";
+    })
+    .catch(err => {
+      document.body.innerHTML = "エラーが発生しました";
+      console.error(err);
+    });
 }
 </script>
-
 </body>
 </html>
