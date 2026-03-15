@@ -16,7 +16,7 @@ const privateCode = url.searchParams.get("privateCode");
 if (!privateCode) {
   document.body.innerHTML = "認証コードがありません";
 } else {
-  fetch(`https://forcommentauth.tgrk-2024tgproject-official.workers.dev/api/verify?privateCode=${privateCode}`)
+  fetch(`https://forcommentauth.tgrk.workers.dev/api/verify?privateCode=${privateCode}`)
     .then(r => r.json())
     .then(data => {
       if (data.error) {
